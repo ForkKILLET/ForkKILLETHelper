@@ -2,6 +2,8 @@
 
 [![release](https://img.shields.io/github/v/release/ForkKILLET/ForkKILLETHelper)](https://github.com/ForkKILLET/ForkKILLETHelper/releases)
 
+[![game banana](https://gamebanana.com/mods/embeddables/424995?type=large)](https://gamebanana.com/mods/424995)
+
 ## 实体
 
 ### `AddictingBlock` 上瘾方块
