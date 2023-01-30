@@ -1,6 +1,6 @@
 # ForkKILLETHelper
 
-[![release](https://img.shields.io/github/v/release/ForkKILLET/ForkKILLETHelper)](https://github.com/ForkKILLET/ForkKILLETHelper/release)
+[![release](https://img.shields.io/github/v/release/ForkKILLET/ForkKILLETHelper)](https://github.com/ForkKILLET/ForkKILLETHelper/releases)
 
 ## 实体
 
