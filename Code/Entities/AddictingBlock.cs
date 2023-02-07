@@ -4,45 +4,43 @@ using Monocle;
 using System;
 using System.Linq;
 
-namespace Celeste.Mod.ForkKILLETHelper.Entities {
+namespace Celeste.Mod.ForkKILLETHelper.Code.Entities {
     [Tracked(true)]
     [CustomEntity("ForkKILLETHelper/AddictingBlock")]
     public class AddictingBlock : Solid {
         public AddictingBlock(Vector2 position, float width, float height, int triggerMethod, bool safe)
             : base(position, width, height, safe) {
-            standToTrigger = (triggerMethod & 0b01) > 0;
-            climbToTrigger = (triggerMethod & 0b10) > 0;
+            StandToTrigger = (triggerMethod & 0b01) > 0;
+            ClimbToTrigger = (triggerMethod & 0b10) > 0;
         }
 
         public AddictingBlock(EntityData data, Vector2 offset)
             : this(data.Position + offset, data.Width, data.Height, data.Int("triggerMethod", 1), false) {}
 
-        public bool triggered = false;
-        public bool standToTrigger;
-        public bool climbToTrigger;
+        public bool Triggered = false;
+        public readonly bool StandToTrigger;
+        public readonly bool ClimbToTrigger;
 
         public override void Render() {
-            Color color = Color.HotPink;
+            var color = Color.HotPink;
 
-            if (triggered) {
-                Level level = SceneAs<Level>();
+            if (Triggered) {
+                var level = SceneAs<Level>();
                 var player = level.Tracker.GetEntity<Player>();
-                if (player != null) {
-                    var addictingComponent = player.Get<AddictingComponent>();
+                var addictingComponent = player?.Get<AddictingComponent>();
 
-                    if (addictingComponent != null) {
-                        float greenAndBlue = 1f - (float) addictingComponent.timeToDie / addictingComponent.maxTimeToDie;
-                        color = new Color(255, greenAndBlue, greenAndBlue);
-                    }
+                if (addictingComponent != null) {
+                    float greenAndBlue = 1f - (float) addictingComponent.TimeToDie / addictingComponent.MaxTimeToDie;
+                    color = new Color(255, greenAndBlue, greenAndBlue);
                 }
             }
 
             // Top
-            Draw.Line(Position + new Vector2(1, 0), Position + new Vector2(Width, 0), standToTrigger ? color : Color.AliceBlue);
+            Draw.Line(Position + new Vector2(1, 0), Position + new Vector2(Width, 0), StandToTrigger ? color : Color.AliceBlue);
 
             // Left & right
-            Draw.Line(Position + new Vector2(1, 0), Position + new Vector2(1, Height - 1), climbToTrigger ? color : Color.AliceBlue);
-            Draw.Line(Position + new Vector2(Width, 0), Position + new Vector2(Width, Height - 1), climbToTrigger ? color : Color.AliceBlue);
+            Draw.Line(Position + new Vector2(1, 0), Position + new Vector2(1, Height - 1), ClimbToTrigger ? color : Color.AliceBlue);
+            Draw.Line(Position + new Vector2(Width, 0), Position + new Vector2(Width, Height - 1), ClimbToTrigger ? color : Color.AliceBlue);
 
             // Bottom
             Draw.Line(Position + new Vector2(0, Height - 1), Position + new Vector2(Width, Height - 1), Color.AliceBlue);
@@ -55,31 +53,32 @@ namespace Celeste.Mod.ForkKILLETHelper.Entities {
             if (component == null) {
                 var addictingComponent = new AddictingComponent(1.5f);
                 player.Add(addictingComponent);
-                var transitionListener = new TransitionListener();
-                transitionListener.OnOutBegin = () => {
-                    player.Remove(addictingComponent);
+                var transitionListener = new TransitionListener {
+                    OnOutBegin = () => {
+                        player.Remove(addictingComponent);
+                    }
                 };
                 player.Add(transitionListener);
             }
             else {
-                component.timeToDie = 1;
+                component.TimeToDie = 1;
             }
 
-            if (! triggered) { // If self is not triggered, set all blocks triggered.
-                Level level = SceneAs<Level>();
-                var addictingBlocks = level.Tracker.GetEntities<AddictingBlock>().Cast<AddictingBlock>();
-                foreach (var block in addictingBlocks) {
-                    block.triggered = true;
-                }
+            if (Triggered) return; // If self is not triggered, set all blocks triggered.
+
+            Level level = SceneAs<Level>();
+            var addictingBlocks = level.Tracker.GetEntities<AddictingBlock>().Cast<AddictingBlock>();
+            foreach (var block in addictingBlocks) {
+                block.Triggered = true;
             }
         }
 
         public override void Update() {
-            if (standToTrigger && HasPlayerOnTop()) {
+            if (StandToTrigger && HasPlayerOnTop()) {
                 Player player = GetPlayerOnTop();
                 TriggerByPlayer(player);
             }
-            if (climbToTrigger && HasPlayerClimbing()) {
+            if (ClimbToTrigger && HasPlayerClimbing()) {
                 Player player = GetPlayerClimbing();
                 TriggerByPlayer(player);
             }
@@ -88,17 +87,17 @@ namespace Celeste.Mod.ForkKILLETHelper.Entities {
 
     public class AddictingComponent : Component {
         public AddictingComponent(float maxTimeToDie) : base(true, false) {
-            this.timeToDie = maxTimeToDie;
-            this.maxTimeToDie = maxTimeToDie;
+            TimeToDie = maxTimeToDie;
+            MaxTimeToDie = maxTimeToDie;
         }
 
-        public float maxTimeToDie { get; private set; }
+        public float MaxTimeToDie { get; }
 
-        public float timeToDie;
+        public float TimeToDie;
 
         public override void Update() {
-            timeToDie -= Engine.DeltaTime;
-            if (timeToDie < 0) {
+            TimeToDie -= Engine.DeltaTime;
+            if (TimeToDie < 0) {
                 Level level = SceneAs<Level>();
                 var player = level.Tracker.GetEntity<Player>();
                 player.Die(new Vector2(0, 0));

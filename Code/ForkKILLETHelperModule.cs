@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace Celeste.Mod.ForkKILLETHelper
+namespace Celeste.Mod.ForkKILLETHelper.Code
 {
     public class ForkKILLETHelperModule : EverestModule
     {
@@ -13,7 +13,7 @@ namespace Celeste.Mod.ForkKILLETHelper
         public override Type SessionType => typeof(ForkKILLETHelperModuleSession);
         public static ForkKILLETHelperModuleSession Session => (ForkKILLETHelperModuleSession) Instance._Session;
 
-        public ForkKILLETHelperModule()
+        protected ForkKILLETHelperModule()
         {
             Instance = this;
 #if DEBUG
