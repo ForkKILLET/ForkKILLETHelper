@@ -1,0 +1,7 @@
+prison=
+[MADELINE left sad] Addiction made me behind bars...
+
+ForkKILLET_TestMap_TestMap=Addiction Demo
+ForkKILLET_TestMap_TestMap2=Addiction Demo 2
+
+poem_ForkKILLET_TestMap_TestMap_A=Thanks for testing

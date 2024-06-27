@@ -1,0 +1,6 @@
+- Name: ForkKILLETHelper
+  Version: 0.3.0
+  DLL: bin/ForkKILLETHelper.dll
+  Dependencies:
+    - Name: EverestCore
+      Version: 1.4673.0
