@@ -20,7 +20,7 @@ inotifywait -m -r -e 'modify,create,move' --exclude '\./bin|\./obj' . |
     while read file_path file_event file_name; do 
         echo -e "\033[34m----i Event ${file_path}${file_name} [${file_event}]\033[0m"
 
-        if [[ "${file_name}" == *.cs ]]; then
+        if [[ "${file_name}" == *.cs* ]]; then
             ./scripts/build.sh
             cp ./bin/${mod_name}.dll ${mod_dir}/bin/${mod_name}.dll
             continue
@@ -30,6 +30,8 @@ inotifywait -m -r -e 'modify,create,move' --exclude '\./bin|\./obj' . |
             continue
         elif [[ "${file_name}" == *.bin ]]; then
             echo -e "\033[32m----> Copying Map\033[0m"
+        elif [[ "${file_path}" == ./Graphics/* ]]; then
+            echo -e "\033[32m----> Copying Graphics\033[0m"
         elif [[ "${file_path}" == ./Loenn/* ]]; then
             echo -e "\033[32m----> Copying Loenn\033[0m"
         elif [[ "${file_path}" == ./Dialog/* ]]; then
@@ -39,8 +41,9 @@ inotifywait -m -r -e 'modify,create,move' --exclude '\./bin|\./obj' . |
         fi
 
         if [ -d ${mod_dir} ]; then
-            rm -f ${mod_dir}${file_path:1}${file_name}
-            cp ${file_path}${file_name} ${mod_dir}${file_path:1}
+            rm -rf ${mod_dir}${file_path:1}${file_name}
+            mkdir -p ${mod_dir}${file_path:1}
+            cp -r ${file_path}${file_name} ${mod_dir}${file_path:1}
         else
             echo -e "\033[32m----> Copying All\033[0m"
             cp -r . ${mod_dir}
