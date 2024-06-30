@@ -25,7 +25,7 @@ public class AddictBase {
 
         var component = player.Get<AddictingComponent>();
         if (component == null) {
-            var addictingComponent = new AddictingComponent(1.5f);
+            var addictingComponent = new AddictingComponent(1.6f);
             player.Add(addictingComponent);
             var transitionListener = new TransitionListener();
             transitionListener.OnOutBegin = () => {

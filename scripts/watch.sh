@@ -20,7 +20,7 @@ inotifywait -m -r -e 'modify,create,move' --exclude '\./bin|\./obj' . |
     while read file_path file_event file_name; do 
         echo -e "\033[34m----i Event ${file_path}${file_name} [${file_event}]\033[0m"
 
-        if [[ "${file_name}" == *.cs* ]]; then
+        if [[ "${file_name}" == *.cs || "${file_name}" == *.csproj ]]; then
             ./scripts/build.sh
             cp ./bin/${mod_name}.dll ${mod_dir}/bin/${mod_name}.dll
             continue
